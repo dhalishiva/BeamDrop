@@ -32,6 +32,8 @@ Phones need a secure context for the download service worker, so to try a real p
 
 **Frontend** (static): Vercel works as-is, `vercel.json` handles SPA routing and the service worker headers. Set `VITE_SIGNALING_URL` to your signaling server, for example `wss://signal.example.com/ws`.
 
+**Signaling server on Render (free):** `render.yaml` is a ready Blueprint (Singapore region, free plan). New → Blueprint → pick this repo. After the site is on Vercel, add `ALLOWED_ORIGINS` in Render's Environment tab. Free services sleep after 15 idle minutes and take about a minute to wake, so the app pings `/health` when it opens and the UI explains a slow first connection.
+
 **Signaling server** (`server/index.js`): needs a host that keeps WebSocket connections open, so not Vercel serverless. Fly.io, Railway, Render or any small VPS is fine. Set:
 
 - `ALLOWED_ORIGINS` — your site origin(s), comma separated

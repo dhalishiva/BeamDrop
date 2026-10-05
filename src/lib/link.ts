@@ -73,6 +73,7 @@ export class Link {
   private serverIce: RTCIceServer[] = [];
   private closing = false;
   private failed = false;
+  private keepAlive: ReturnType<typeof setInterval> | null = null;
   private connectTimer: ReturnType<typeof setTimeout> | null = null;
   private disconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -107,6 +108,8 @@ export class Link {
     ws.onopen = () => {
       if (this.options.role === 'host') this.sendWs({ type: 'create' });
       else this.sendWs({ type: 'join', code: this.options.code });
+      // A waiting sender can sit here for minutes; keep the socket visibly active.
+      this.keepAlive = setInterval(() => this.sendWs({ type: 'ping' }), 25_000);
     };
     ws.onmessage = (event) => this.onServerMessage(event.data);
     ws.onerror = () => {
@@ -139,6 +142,8 @@ export class Link {
   }
 
   private closeSocket(): void {
+    if (this.keepAlive) clearInterval(this.keepAlive);
+    this.keepAlive = null;
     const ws = this.ws;
     this.ws = null;
     if (!ws) return;

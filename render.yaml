@@ -1,0 +1,18 @@
+# Render Blueprint for the BeamDrop signaling server (the website itself lives on Vercel).
+services:
+  - type: web
+    name: beamdrop-signaling
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci --omit=dev
+    startCommand: node server/index.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: TRUST_PROXY
+        value: "1"
+      # After the website is deployed, add ALLOWED_ORIGINS in the Render dashboard
+      # (for example https://your-site.vercel.app). See README.

@@ -206,6 +206,12 @@ wss.on('connection', (ws, req) => {
         return;
       }
 
+      case 'ping': {
+        // Clients ping while waiting so idle-sleeping hosts see activity on the socket.
+        send(ws, { type: 'pong' });
+        return;
+      }
+
       default:
         send(ws, { type: 'error', reason: 'bad_message' });
     }

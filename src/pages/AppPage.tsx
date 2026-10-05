@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Progress } from '../components/Progress';
 import { QrCode } from '../components/QrCode';
 import { SiteHeader } from '../components/Layout';
-import { CODE_PATTERN, cleanCode, receiveLink } from '../lib/config';
+import { CODE_PATTERN, cleanCode, receiveLink, warmUpSignaling } from '../lib/config';
 import { formatBytes, groupCode } from '../lib/format';
 import { usePageTitle, useReceive, useSend } from '../lib/hooks';
 import { registerDownloadWorker, saveSupport } from '../lib/sink';
@@ -44,6 +44,7 @@ export default function AppPage() {
   // Register the download worker early so receiving can stream straight to disk.
   useEffect(() => {
     void registerDownloadWorker();
+    warmUpSignaling();
   }, []);
 
   const choose = (next: Mode) => {
@@ -171,6 +172,7 @@ function SendPanel({ send }: { send: ReturnType<typeof useSend> }) {
       <p>
         <span className="spinner" aria-hidden="true" />
         Setting up your transfer…
+        <SlowHint />
       </p>
     );
   }
@@ -381,6 +383,7 @@ function ReceivePanel({
           <span className="spinner" aria-hidden="true" />
           Connecting to the sending device…
         </p>
+        <SlowHint />
         <div className="row">
           <button className="btn btn--ghost" type="button" onClick={cancel}>
             Cancel
@@ -504,6 +507,20 @@ function ReceivePanel({
       </div>
     </div>
   );
+}
+
+/** After a few seconds, explain why: an idle connection service can take up to a minute to wake. */
+function SlowHint() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setShow(true), 6000);
+    return () => clearTimeout(timer);
+  }, []);
+  return show ? (
+    <span className="small" style={{ display: 'block', marginTop: '0.5rem' }}>
+      Still connecting. If the service was idle, it can take up to a minute to wake up.
+    </span>
+  ) : null;
 }
 
 function FileCard({ name, size }: { name: string; size: number }) {
