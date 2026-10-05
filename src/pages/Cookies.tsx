@@ -30,8 +30,10 @@ const sections: DocSection[] = [
     title: 'Analytics and advertising',
     body: (
       <p>
-        BeamDrop does not use analytics or advertising trackers. If that changes, we will update this
-        page and ask for your consent where the law requires it.
+        BeamDrop uses Vercel Web Analytics and Speed Insights to count page views and measure page
+        speed. They are cookie-free, collect no personal profile, and do not see your files, file
+        names or transfer codes. BeamDrop does not use advertising trackers. If that changes, we will
+        update this page and ask for your consent where the law requires it.
       </p>
     ),
   },

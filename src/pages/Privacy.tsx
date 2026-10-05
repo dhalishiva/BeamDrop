@@ -18,7 +18,11 @@ const sections: DocSection[] = [
           The device you connect to can see your IP address and a short device label, like any direct
           connection.
         </li>
-        <li>We do not use advertising or analytics trackers.</li>
+        <li>
+          We use Vercel Web Analytics and Speed Insights to count page views and measure how fast
+          the site loads. They do not use cookies and never see your files, file names or transfer
+          codes. We do not use advertising trackers.
+        </li>
       </ul>
     ),
   },
@@ -177,7 +181,7 @@ const sections: DocSection[] = [
     title: 'Changes to this policy',
     body: (
       <p>
-        If we change how we handle data, for example by adding analytics, we will update this page
+        If we change how we handle data, for example by adding new analytics tools, we will update this page
         and the date above, and ask for your consent where the law requires it.
       </p>
     ),
