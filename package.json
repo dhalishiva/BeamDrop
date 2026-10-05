@@ -1,0 +1,39 @@
+{
+  "name": "beamdrop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BeamDrop by Kriosity: send files of any size straight from one device to another, browser to browser.",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n web,signal -c blue,yellow \"vite\" \"node server/index.js\"",
+    "dev:web": "vite",
+    "dev:signal": "node server/index.js",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "start:signal": "node server/index.js",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "tsx test/e2e.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.1.0",
+    "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "node-datachannel": "^0.12.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
