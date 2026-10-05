@@ -67,7 +67,7 @@ test/e2e.ts                end-to-end tests
 
 1. **Legal pages are a careful first draft, not legal advice.** Set the registered entity in `src/legal.config.ts` (`legalName`, `address`), then have a lawyer review the Terms and Privacy pages. Choices worth a second opinion: the ₹1,000 liability floor, Gautam Buddh Nagar jurisdiction, and the 18+ age line.
 2. **Add TURN** (above), or expect some connections to fail.
-3. **Social preview image.** `index.html` has Open Graph tags but no image yet.
+3. **Social preview.** Icons and a 1200×630 preview image are in `public/`. The preview URL is made absolute at build time from Vercel's `VERCEL_PROJECT_PRODUCTION_URL`; set `SITE_URL` to use a custom domain instead.
 4. **Receiver-only consent today.** The sender sees who connected and can cancel, and nothing is sent until the receiver accepts, but a stranger who guesses a live code (6 characters, rate limited) would see the file name and size. Adding a "Allow this device?" step on the sender side closes that gap.
 
 ## Known limits
