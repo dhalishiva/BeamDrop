@@ -11,10 +11,36 @@ import crypto from 'node:crypto';
 import { WebSocketServer } from 'ws';
 
 const PORT = Number(process.env.PORT || 8787);
+// Accepts "https://site.com", "site.com", trailing slashes, or a wildcard like "*.vercel.app".
+function normalizeOrigin(value) {
+  return value.trim().toLowerCase().replace(/\/+$/, '');
+}
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
-  .map((s) => s.trim())
+  .map(normalizeOrigin)
   .filter(Boolean);
+
+function originAllowed(origin) {
+  if (!ALLOWED_ORIGINS.length || ALLOWED_ORIGINS.includes('*')) return true;
+  if (!origin) return false;
+  const o = normalizeOrigin(origin);
+  let host = o;
+  try {
+    host = new URL(o).host;
+  } catch {
+    /* keep raw */
+  }
+  return ALLOWED_ORIGINS.some((rule) => {
+    if (rule === o || rule === host) return true;
+    if (rule.includes('*')) {
+      const re = new RegExp(
+        '^' + rule.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '[^.]*(?:\\.[^.]*)*') + '$',
+      );
+      return re.test(o) || re.test(host);
+    }
+    return false;
+  });
+}
 const TRUST_PROXY = process.env.TRUST_PROXY === '1';
 const TURN_URLS = (process.env.TURN_URLS || '').split(',').map((s) => s.trim()).filter(Boolean);
 const TURN_SECRET = process.env.TURN_SECRET || '';
@@ -117,9 +143,10 @@ const wss = new WebSocketServer({
   server,
   path: '/ws',
   maxPayload: MAX_MESSAGE_BYTES,
-  verifyClient: ({ origin }) => {
-    if (!ALLOWED_ORIGINS.length) return true;
-    return Boolean(origin) && ALLOWED_ORIGINS.includes(origin);
+  verifyClient: ({ origin }, done) => {
+    if (originAllowed(origin)) return done(true);
+    console.warn(`rejected origin "${origin || '(none)'}"; ALLOWED_ORIGINS = ${ALLOWED_ORIGINS.join(', ')}`);
+    done(false, 403, 'Origin not allowed');
   },
 });
 

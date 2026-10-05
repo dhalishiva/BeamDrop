@@ -36,7 +36,7 @@ Phones need a secure context for the download service worker, so to try a real p
 
 **Signaling server** (`server/index.js`): needs a host that keeps WebSocket connections open, so not Vercel serverless. Fly.io, Railway, Render or any small VPS is fine. Set:
 
-- `ALLOWED_ORIGINS` — your site origin(s), comma separated
+- `ALLOWED_ORIGINS` — your site origin(s), comma separated, e.g. `https://beamdrop.vercel.app` (trailing slash is ignored; `*.vercel.app` wildcards work; rejected origins are logged)
 - `TRUST_PROXY=1` — when behind a platform proxy, so rate limiting sees real client IPs
 - `PORT` — default 8787
 
